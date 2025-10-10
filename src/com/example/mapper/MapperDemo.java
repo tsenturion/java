@@ -1,6 +1,6 @@
 // Файл: src/com/example/mapper/MapperDemo.java
 
-package src.com.example.mapper;
+package com.example.mapper;
 
 public class MapperDemo {
     public static void main(String[] args) {

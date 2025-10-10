@@ -1,6 +1,6 @@
 // Файл: src/com/example/data/Printer.java
 
-package src.com.example.data;
+package com.example.data;
 
 public class Printer {
     public static void main(String[] args) {
