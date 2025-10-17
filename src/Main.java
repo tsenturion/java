@@ -39,6 +39,15 @@ class Teacher extends Person {
     public void introduce() {
         System.out.println("Здравствуйте, меня зовут " + getName() + ", я преподаватель кафедры " + department + ".");
     }
+
+    // Перегруженный метод introduce() с параметром isFormal
+    public void introduce(boolean isFormal) {
+        if (isFormal) {
+            System.out.println("Добрый день. Преподаватель " + getName() + ", кафедра " + department + ".");
+        } else {
+            this.introduce(); // вызов переопределенной версии метода без параметров
+        }
+    }
 }
 
 public class Main {
@@ -46,11 +55,14 @@ public class Main {
         // Создание объекта Teacher
         Teacher teacher = new Teacher("Анна Сергеевна", 35, "Математика");
         
-        // Вызов переопределенного метода introduce()
-        teacher.introduce(); // будет вызвана версия метода из класса Teacher
+        // Вызов разных версий перегруженного метода
+        System.out.println("=== Формальное представление ===");
+        teacher.introduce(true); // вызов перегруженного метода с параметром true
         
-        // Создание объекта Person для сравнения
-        Person person = new Person("Иван", 25);
-        person.introduce(); // будет вызвана версия метода из класса Person
+        System.out.println("=== Неформальное представление ===");
+        teacher.introduce(false); // вызов перегруженного метода с параметром false
+        
+        System.out.println("=== Обычное представление ===");
+        teacher.introduce(); // вызов переопределенного метода без параметров
     }
 }
