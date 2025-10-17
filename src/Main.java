@@ -1,53 +1,141 @@
-import java.util.Arrays;
-import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
 
-// Абстрактный базовый класс
-abstract class Shape {
-    public abstract void draw(); // Абстрактный метод - у фигуры нет реализации по умолчанию
-}
+abstract class Character {
+    protected String name;
+    protected int health;
+    protected int attackPower;
 
-// Классы-наследники
-class Circle extends Shape {
-    @Override
-    public void draw() {
-        System.out.println("Рисую круг"); // Реализация метода draw для круга
+    public Character(String name, int health, int attackPower) {
+        this.name = name;
+        this.health = health;
+        this.attackPower = attackPower;
+    }
+
+    // Общий метод attack() - но он абстрактный!
+    // Почему? Потому что каждый персонаж атакует ПО-РАЗНОМУ.
+    public abstract void attack(Character target);
+
+    // Общий метод takeDamage(int damage) – здесь уже есть базовая логика
+    public void takeDamage(int damage) {
+        this.health -= damage;
+        System.out.println(name + " получает " + damage + " урона. Осталось здоровья: " + Math.max(health, 0));
+    }
+
+    public boolean isAlive() {
+        return health > 0;
+    }
+
+    public String getName() {
+        return name;
     }
 }
 
-class Square extends Shape {
+class Warrior extends Character {
+    public Warrior(String name) {
+        super(name, 150, 25); // Много здоровья, средняя атака
+    }
+
     @Override
-    public void draw() {
-        System.out.println("Рисую квадрат"); // Реализация метода draw для квадрата
+    public void attack(Character target) {
+        System.out.println(name + " наносит мощный удар мечом по " + target.getName() + "!");
+        target.takeDamage(attackPower);
     }
 }
 
-class Triangle extends Shape {
-    @Override
-    public void draw() {
-        System.out.println("Рисую треугольник"); // Реализация метода draw для треугольника
+class Mage extends Character {
+    public Mage(String name) {
+        super(name, 80, 15); // Мало здоровья, слабая базовая атака
     }
-}
 
-// Главный класс с точкой входа
-public class Main {
-    public static void main(String[] args) {
-        // Создание списка фигур разных типов
-        List<Shape> shapes = Arrays.asList(new Circle(), new Square(), new Triangle());
+    @Override
+    public void attack(Character target) {
+        boolean isCritical = Math.random() > 0.7; // 30% шанс на критическую атаку
+        int finalDamage = attackPower;
 
-        System.out.println("=== Художественная студия ===");
-        // Проход по всем фигурам в списке
-        for (Shape shape : shapes) {
-            shape.draw(); // Динамическое связывание: для каждого объекта вызовется свой draw()
+        if (isCritical) {
+            finalDamage *= 3; // Утраиваем урон!
+            System.out.println(name + " выпускает огненный шар по " + target.getName() + "! КРИТИЧЕСКИЙ УРОН!");
+        } else {
+            System.out.println(name + " бросает магическую стрелу в " + target.getName() + ".");
         }
 
-        // Дополнительная демонстрация полиморфизма
-        System.out.println("\n=== Отдельные фигуры ===");
-        Shape shape1 = new Circle();   // Circle хранится в переменной типа Shape
-        Shape shape2 = new Square();   // Square хранится в переменной типа Shape
-        Shape shape3 = new Triangle(); // Triangle хранится в переменной типа Shape
+        target.takeDamage(finalDamage);
+    }
+}
+
+class Archer extends Character {
+    public Archer(String name) {
+        super(name, 100, 20); // Среднее здоровье, хорошая атака
+    }
+
+    @Override
+    public void attack(Character target) {
+        boolean doubleShot = Math.random() > 0.6; // 40% шанс на двойной выстрел
+        int finalDamage = attackPower;
+
+        if (doubleShot) {
+            finalDamage *= 2; // Двойной выстрел!
+            System.out.println(name + " делает двойной выстрел из лука по " + target.getName() + "!");
+        } else {
+            System.out.println(name + " стреляет из лука в " + target.getName() + ".");
+        }
+
+        target.takeDamage(finalDamage);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Random random = new Random();
+
+        // 1. Выбор персонажа игроком
+        System.out.println("Выбери своего бойца: 1 - Воин, 2 - Маг, 3 - Лучник");
+        int choice = scanner.nextInt();
+        Character player = createCharacter(choice, "Игрок");
+
+        // 2. Случайный враг
+        Character enemy = createCharacter(random.nextInt(3) + 1, "Враг");
+
+        System.out.println("Ваш персонаж: " + player.getName() + " vs " + enemy.getName() + "\nБой начинается!\n");
+
+        // 3. Игровой цикл
+        boolean isPlayerTurn = true;
+        while (player.isAlive() && enemy.isAlive()) {
+            Character attacker = isPlayerTurn ? player : enemy;
+            Character target = isPlayerTurn ? enemy : player;
+
+            attacker.attack(target);
+            isPlayerTurn = !isPlayerTurn; // Передаем ход
+            
+            // Пауза между ходами для удобства чтения
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // 4. Определение победителя и награда
+        Character winner = player.isAlive() ? player : enemy;
+        System.out.println("\nПобедитель: " + winner.getName() + "!");
+
+        // 5. Появление зелья
+        int healthPotion = random.nextInt(50) + 1;
+        int strengthPotion = random.nextInt(10) + 1;
+        System.out.println("После боя вы нашли зелье! Восстановлено здоровья: " + healthPotion + ", Сила увеличена на: " + strengthPotion);
         
-        shape1.draw(); // Вызовется draw() из Circle
-        shape2.draw(); // Вызовется draw() из Square
-        shape3.draw(); // Вызовется draw() из Triangle
+        scanner.close();
+    }
+
+    // Полиморфизм в действии! Метод возвращает Character, но создает конкретного наследника.
+    private static Character createCharacter(int type, String baseName) {
+        switch (type) {
+            case 1: return new Warrior(baseName + "-Воин");
+            case 2: return new Mage(baseName + "-Маг");
+            case 3: return new Archer(baseName + "-Лучник");
+            default: return new Warrior(baseName + "-Боец");
+        }
     }
 }
