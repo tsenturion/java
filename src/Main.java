@@ -1,73 +1,53 @@
 import java.util.Arrays;
 import java.util.List;
 
-class Person {
-    private String name;
-    protected int age;
-
-    public Person(String name, int age) {
-        this.name = name;
-        this.age = age;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void introduce() {
-        System.out.println("Привет, меня зовут " + name + ", мне " + age + " лет.");
-    }
+// Абстрактный базовый класс
+abstract class Shape {
+    public abstract void draw(); // Абстрактный метод - у фигуры нет реализации по умолчанию
 }
 
-class Student extends Person {
-    private String studentId;
-
-    public Student(String name, int age, String studentId) {
-        super(name, age);
-        this.studentId = studentId;
-    }
-
+// Классы-наследники
+class Circle extends Shape {
     @Override
-    public void introduce() {
-        System.out.println("Я студент " + getName() + ", мой номер студенческого: " + studentId + ".");
+    public void draw() {
+        System.out.println("Рисую круг"); // Реализация метода draw для круга
     }
 }
 
-class Teacher extends Person {
-    private String department;
-
-    public Teacher(String name, int age, String department) {
-        super(name, age);
-        this.department = department;
-    }
-
+class Square extends Shape {
     @Override
-    public void introduce() {
-        System.out.println("Я преподаватель " + getName() + ", кафедра " + department + ".");
+    public void draw() {
+        System.out.println("Рисую квадрат"); // Реализация метода draw для квадрата
     }
 }
 
+class Triangle extends Shape {
+    @Override
+    public void draw() {
+        System.out.println("Рисую треугольник"); // Реализация метода draw для треугольника
+    }
+}
+
+// Главный класс с точкой входа
 public class Main {
     public static void main(String[] args) {
-        // Создаем полиморфный список людей университета
-        List<Person> people = Arrays.asList(
-            new Student("Анна", 20, "A123"),
-            new Teacher("Игорь Петрович", 55, "Математика"),
-            new Student("Максим", 21, "B456")
-        );
+        // Создание списка фигур разных типов
+        List<Shape> shapes = Arrays.asList(new Circle(), new Square(), new Triangle());
 
-        System.out.println("=== Полиморфизм в действии ===");
-        // Проходим по всем людям в списке
-        for (Person person : people) {
-            person.introduce(); // Вызываем метод introduce() для каждого объекта
+        System.out.println("=== Художественная студия ===");
+        // Проход по всем фигурам в списке
+        for (Shape shape : shapes) {
+            shape.draw(); // Динамическое связывание: для каждого объекта вызовется свой draw()
         }
 
-        // Демонстрация полиморфизма с отдельными переменными
-        System.out.println("\n=== Отдельные полиморфные переменные ===");
-        Person person1 = new Student("Елена", 19, "C789");
-        Person person2 = new Teacher("Сергей Владимирович", 42, "Физика");
+        // Дополнительная демонстрация полиморфизма
+        System.out.println("\n=== Отдельные фигуры ===");
+        Shape shape1 = new Circle();   // Circle хранится в переменной типа Shape
+        Shape shape2 = new Square();   // Square хранится в переменной типа Shape
+        Shape shape3 = new Triangle(); // Triangle хранится в переменной типа Shape
         
-        person1.introduce(); // Будет вызван метод из класса Student
-        person2.introduce(); // Будет вызван метод из класса Teacher
+        shape1.draw(); // Вызовется draw() из Circle
+        shape2.draw(); // Вызовется draw() из Square
+        shape3.draw(); // Вызовется draw() из Triangle
     }
 }
