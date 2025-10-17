@@ -1,24 +1,17 @@
+import java.util.Arrays;
+import java.util.List;
+
 class Person {
-    private String name;   // private - закрыто для всех, кроме самого класса Person
-    protected int age;     // protected - доступно внутри пакета и для всех наследников
-    public String hobby;   // public - доступно отовсюду
+    private String name;
+    protected int age;
 
-    // Конструктор класса Person
     public Person(String name, int age) {
-        this.name = name;   // доступ к private полю изнутри класса
-        this.age = age;     // доступ к protected полю изнутри класса
-    }
-
-    // Конструктор с hobby
-    public Person(String name, int age, String hobby) {
         this.name = name;
         this.age = age;
-        this.hobby = hobby;
     }
 
-    // Геттер для private поля name
     public String getName() {
-        return name; // доступ к private полю изнутри класса
+        return name;
     }
 
     public void introduce() {
@@ -26,43 +19,55 @@ class Person {
     }
 }
 
-class Teacher extends Person {
-    private String department; // приватное поле department для преподавателя
+class Student extends Person {
+    private String studentId;
 
-    public Teacher(String name, int age, String department) {
-        super(name, age); // вызов конструктора родительского класса Person
-        this.department = department; // инициализация собственного поля department
+    public Student(String name, int age, String studentId) {
+        super(name, age);
+        this.studentId = studentId;
     }
 
-    // Переопределение метода introduce() из родительского класса
     @Override
     public void introduce() {
-        System.out.println("Здравствуйте, меня зовут " + getName() + ", я преподаватель кафедры " + department + ".");
+        System.out.println("Я студент " + getName() + ", мой номер студенческого: " + studentId + ".");
+    }
+}
+
+class Teacher extends Person {
+    private String department;
+
+    public Teacher(String name, int age, String department) {
+        super(name, age);
+        this.department = department;
     }
 
-    // Перегруженный метод introduce() с параметром isFormal
-    public void introduce(boolean isFormal) {
-        if (isFormal) {
-            System.out.println("Добрый день. Преподаватель " + getName() + ", кафедра " + department + ".");
-        } else {
-            this.introduce(); // вызов переопределенной версии метода без параметров
-        }
+    @Override
+    public void introduce() {
+        System.out.println("Я преподаватель " + getName() + ", кафедра " + department + ".");
     }
 }
 
 public class Main {
     public static void main(String[] args) {
-        // Создание объекта Teacher
-        Teacher teacher = new Teacher("Анна Сергеевна", 35, "Математика");
+        // Создаем полиморфный список людей университета
+        List<Person> people = Arrays.asList(
+            new Student("Анна", 20, "A123"),
+            new Teacher("Игорь Петрович", 55, "Математика"),
+            new Student("Максим", 21, "B456")
+        );
+
+        System.out.println("=== Полиморфизм в действии ===");
+        // Проходим по всем людям в списке
+        for (Person person : people) {
+            person.introduce(); // Вызываем метод introduce() для каждого объекта
+        }
+
+        // Демонстрация полиморфизма с отдельными переменными
+        System.out.println("\n=== Отдельные полиморфные переменные ===");
+        Person person1 = new Student("Елена", 19, "C789");
+        Person person2 = new Teacher("Сергей Владимирович", 42, "Физика");
         
-        // Вызов разных версий перегруженного метода
-        System.out.println("=== Формальное представление ===");
-        teacher.introduce(true); // вызов перегруженного метода с параметром true
-        
-        System.out.println("=== Неформальное представление ===");
-        teacher.introduce(false); // вызов перегруженного метода с параметром false
-        
-        System.out.println("=== Обычное представление ===");
-        teacher.introduce(); // вызов переопределенного метода без параметров
+        person1.introduce(); // Будет вызван метод из класса Student
+        person2.introduce(); // Будет вызван метод из класса Teacher
     }
 }
