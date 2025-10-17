@@ -1,26 +1,29 @@
-class Message {
-    // Приватное поле text - защищено от прямого доступа извне
-    private String text;
+class Person {
+    String name; // поле для имени
+    int age;     // поле для возраста
 
-    // Геттер для получения значения text (чтение)
-    public String getText() {
-        return text; // возвращает значение поля text
-    }
-
-    // Сеттер для установки значения text (запись)
-    public void setText(String newText) {
-        this.text = newText; // устанавливает новое значение для поля text
+    public void introduce() {
+        System.out.println("Привет, меня зовут " + name + ", мне " + age + " лет."); // вывод приветствия
     }
 }
 
-// Класс для демонстрации работы
+// Класс-наследник Student
+class Student extends Person {
+    String studentId; // собственное свойство студента - номер студенческого билета
+
+    public void study() {
+        System.out.println(name + " усердно учится."); // использование унаследованного поля name
+    }
+}
+
 public class Main {
     public static void main(String[] args) {
-        Message message = new Message(); // создание объекта Message
+        Student student = new Student(); // создание объекта Student
+        student.name = "Анна";           // установка унаследованного поля name
+        student.age = 20;                // установка унаследованного поля age
+        student.studentId = "ST12345";   // установка собственного поля studentId
         
-        message.setText("Hello, World!"); // установка текста через сеттер
-        String text = message.getText(); // получение текста через геттер
-        
-        System.out.println("Текст сообщения: " + text); // вывод текста
+        student.introduce(); // вызов унаследованного метода
+        student.study();     // вызов собственного метода
     }
 }
