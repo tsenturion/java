@@ -4,50 +4,52 @@ import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
-        List<String> names = Arrays.asList("Анна", "Иван", "Мария");
+        List<String> names = Arrays.asList("Анна", "Иван", "Мария", "Пётр", "Яна");
         
         System.out.println("Исходный список имен: " + names);
         
-        // Преобразование каждого имени в его длину
-        List<Integer> nameLengths = names.stream()
-            .map(String::length) // Преобразуем каждое имя в его длину (String -> Integer)
+        // Сортировка по длине имени (от короткого к длинному)
+        List<String> sortedNames = names.stream()
+            .sorted((name1, name2) -> name1.length() - name2.length()) // Сортируем по длине имени
             .collect(Collectors.toList());
         
-        System.out.println("Длины имен: " + nameLengths);
+        System.out.println("Сортировка по длине (короткие -> длинные): " + sortedNames);
         
-        // Дополнительные примеры с map():
+        // Дополнительные примеры с sorted():
         
-        System.out.println("\n=== Имена в верхнем регистре ===");
-        List<String> upperCaseNames = names.stream()
-            .map(String::toUpperCase) // Преобразуем в верхний регистр
+        System.out.println("\n=== Сортировка по длине (длинные -> короткие) ===");
+        List<String> sortedDescByLength = names.stream()
+            .sorted((name1, name2) -> name2.length() - name1.length()) // Обратный порядок
             .collect(Collectors.toList());
-        System.out.println("Имена в верхнем регистре: " + upperCaseNames);
+        System.out.println("Сортировка по длине (длинные -> короткие): " + sortedDescByLength);
         
-        System.out.println("\n=== Первые буквы имен ===");
-        List<Character> firstLetters = names.stream()
-            .map(name -> name.charAt(0)) // Берем первую букву каждого имени
+        System.out.println("\n=== Естественная сортировка (алфавитная) ===");
+        List<String> alphabeticallySorted = names.stream()
+            .sorted() // Естественный порядок для строк - алфавитный
             .collect(Collectors.toList());
-        System.out.println("Первые буквы: " + firstLetters);
+        System.out.println("Алфавитная сортировка: " + alphabeticallySorted);
         
-        System.out.println("\n=== Имена с указанием длины ===");
-        List<String> namesWithLength = names.stream()
-            .map(name -> name + " (" + name.length() + " букв)") // Добавляем информацию о длине
+        System.out.println("\n=== Обратная алфавитная сортировка ===");
+        List<String> reverseAlphabetical = names.stream()
+            .sorted((a, b) -> b.compareTo(a)) // Обратный алфавитный порядок
             .collect(Collectors.toList());
-        System.out.println("Имена с длиной: " + namesWithLength);
+        System.out.println("Обратная алфавитная сортировка: " + reverseAlphabetical);
         
-        System.out.println("\n=== Числовые преобразования ===");
-        List<String> numbers = Arrays.asList("1", "2", "3", "4", "5");
-        List<Integer> integers = numbers.stream()
-            .map(Integer::parseInt) // Преобразуем строки в числа
+        System.out.println("\n=== Комплексная сортировка (сначала по длине, затем по алфавиту) ===");
+        List<String> complexSorted = names.stream()
+            .sorted((name1, name2) -> {
+                // Сначала сравниваем по длине
+                int lengthCompare = name1.length() - name2.length();
+                // Если длины равны, сравниваем по алфавиту
+                return lengthCompare != 0 ? lengthCompare : name1.compareTo(name2);
+            })
             .collect(Collectors.toList());
-        System.out.println("Строки: " + numbers);
-        System.out.println("Числа: " + integers);
+        System.out.println("Сначала по длине, затем по алфавиту: " + complexSorted);
         
-        System.out.println("\n=== Комбинация map и filter ===");
-        List<String> longNames = names.stream()
-            .map(String::toUpperCase)        // Сначала преобразуем
-            .filter(name -> name.length() > 4) // Затем фильтруем
+        System.out.println("\n=== Сортировка с использованием Comparator.comparing ===");
+        List<String> sortedWithComparator = names.stream()
+            .sorted(java.util.Comparator.comparing(String::length)) // Более читаемый способ
             .collect(Collectors.toList());
-        System.out.println("Длинные имена в верхнем регистре: " + longNames);
+        System.out.println("Сортировка через Comparator.comparing: " + sortedWithComparator);
     }
 }
