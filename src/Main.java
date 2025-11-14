@@ -1,39 +1,46 @@
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) {
-        // Создание списка из элементов
-        List<String> list = Arrays.asList("a", "b", "c");
+        // Создание массива строк
+        String[] array = {"a", "b", "c"};
         
-        // Создание потока из списка
-        Stream<String> streamFromList = list.stream(); // Поток создан!
+        // Создание потока из массива
+        Stream<String> streamFromArray = Arrays.stream(array); // Поток создан из массива!
         
-        System.out.println("Элементы потока:");
-        // Вывод элементов потока с помощью forEach
-        streamFromList.forEach(element -> System.out.println(element));
+        System.out.println("Элементы потока из массива:");
+        // Вывод элементов потока
+        streamFromArray.forEach(element -> System.out.println(element));
         
-        // Дополнительные примеры работы с потоками:
+        // Дополнительные примеры работы с потоками из массивов:
         
-        System.out.println("\n=== Фильтрация и преобразование ===");
-        List<String> words = Arrays.asList("apple", "banana", "cherry", "date");
+        System.out.println("\n=== Числовой массив ===");
+        int[] numbers = {1, 2, 3, 4, 5};
         
-        // Фильтрация слов длиннее 4 символов и преобразование в верхний регистр
-        words.stream()
-             .filter(word -> word.length() > 4)        // промежуточная операция - фильтрация
-             .map(String::toUpperCase)                 // промежуточная операция - преобразование
-             .forEach(System.out::println);            // терминальная операция - вывод
+        // Создание потока из числового массива
+        Arrays.stream(numbers)
+              .filter(n -> n % 2 == 0)    // фильтрация четных чисел
+              .forEach(n -> System.out.println("Четное число: " + n));
         
-        System.out.println("\n=== Подсчет элементов ===");
-        long count = words.stream()
-                         .filter(word -> word.contains("a")) // слова содержащие 'a'
-                         .count();                          // терминальная операция - подсчет
-        System.out.println("Слов содержащих 'a': " + count);
+        System.out.println("\n=== Работа с частью массива ===");
+        String[] words = {"apple", "banana", "cherry", "date", "elderberry"};
         
-        System.out.println("\n=== Создание потока из значений ===");
-        // Создание потока напрямую из значений
-        Stream<String> directStream = Stream.of("x", "y", "z");
-        directStream.forEach(System.out::println);
+        // Создание потока из части массива (с 1 по 3 индекс, не включая 4)
+        Arrays.stream(words, 1, 4)        // элементы с индексами 1, 2, 3
+              .map(String::toUpperCase)   // преобразование в верхний регистр
+              .forEach(System.out::println);
+        
+        System.out.println("\n=== Подсчет и сумма ===");
+        double[] doubles = {1.5, 2.7, 3.1, 4.8};
+        
+        // Работа с числовыми потоками
+        long count = Arrays.stream(doubles).count();
+        double sum = Arrays.stream(doubles).sum();
+        double average = Arrays.stream(doubles).average().orElse(0.0);
+        
+        System.out.println("Количество элементов: " + count);
+        System.out.println("Сумма: " + sum);
+        System.out.println("Среднее: " + average);
     }
 }
