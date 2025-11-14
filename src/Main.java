@@ -1,50 +1,39 @@
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Comparator;
+import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) {
-        // Создание списка имен
-        List<String> names = new ArrayList<>();
-        names.add("Мария");
-        names.add("Анна");
-        names.add("Иван");
-        names.add("Петр");
-        names.add("Ольга");
-
-        System.out.println("Исходный список:");
-        System.out.println(names);
-
-        // Сортировка с использованием лямбда-выражения
-        names.sort((s1, s2) -> s1.compareTo(s2));
-
-        System.out.println("\nОтсортированный список:");
-        System.out.println(names);
-
-        // Альтернативные способы сортировки:
+        // Создание списка из элементов
+        List<String> list = Arrays.asList("a", "b", "c");
         
-        // 1. С использованием ссылки на метод
-        System.out.println("\nСортировка через ссылку на метод:");
-        List<String> names2 = new ArrayList<>(names);
-        names2.sort(String::compareTo);
-        System.out.println(names2);
-
-        // 2. С использованием Comparator.naturalOrder()
-        System.out.println("\nСортировка через Comparator.naturalOrder():");
-        List<String> names3 = new ArrayList<>(names);
-        names3.sort(Comparator.naturalOrder());
-        System.out.println(names3);
-
-        // 3. Обратная сортировка
-        System.out.println("\nОбратная сортировка:");
-        List<String> names4 = new ArrayList<>(names);
-        names4.sort(Comparator.reverseOrder());
-        System.out.println(names4);
-
-        // 4. Сортировка по длине строки
-        System.out.println("\nСортировка по длине строки:");
-        List<String> names5 = new ArrayList<>(names);
-        names5.sort((s1, s2) -> Integer.compare(s1.length(), s2.length()));
-        System.out.println(names5);
+        // Создание потока из списка
+        Stream<String> streamFromList = list.stream(); // Поток создан!
+        
+        System.out.println("Элементы потока:");
+        // Вывод элементов потока с помощью forEach
+        streamFromList.forEach(element -> System.out.println(element));
+        
+        // Дополнительные примеры работы с потоками:
+        
+        System.out.println("\n=== Фильтрация и преобразование ===");
+        List<String> words = Arrays.asList("apple", "banana", "cherry", "date");
+        
+        // Фильтрация слов длиннее 4 символов и преобразование в верхний регистр
+        words.stream()
+             .filter(word -> word.length() > 4)        // промежуточная операция - фильтрация
+             .map(String::toUpperCase)                 // промежуточная операция - преобразование
+             .forEach(System.out::println);            // терминальная операция - вывод
+        
+        System.out.println("\n=== Подсчет элементов ===");
+        long count = words.stream()
+                         .filter(word -> word.contains("a")) // слова содержащие 'a'
+                         .count();                          // терминальная операция - подсчет
+        System.out.println("Слов содержащих 'a': " + count);
+        
+        System.out.println("\n=== Создание потока из значений ===");
+        // Создание потока напрямую из значений
+        Stream<String> directStream = Stream.of("x", "y", "z");
+        directStream.forEach(System.out::println);
     }
 }
