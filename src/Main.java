@@ -1,47 +1,51 @@
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
-        // Создание списка чисел
-        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        List<String> names = Arrays.asList("Анна", "Иван", "Мария", "Пётр", "Яна");
         
-        System.out.println("Исходный список чисел: " + numbers);
-        System.out.println("\nЧетные числа из списка:");
+        System.out.println("Исходный список имен: " + names);
         
-        // Фильтрация четных чисел и вывод
-        numbers.stream()
-               .filter(n -> n % 2 == 0)          // промежуточная операция - фильтрация
-               .forEach(System.out::println);     // терминальная операция - вывод
+        // Фильтрация имен длиннее 4 символов и сбор в новый список
+        List<String> longNames = names.stream()
+            .filter(name -> name.length() > 4) // Оставляем имена длиннее 4 символов
+            .collect(Collectors.toList());     // Собираем результат в новый List
         
-        // Дополнительные примеры с filter():
+        System.out.println("Имена длиннее 4 символов: " + longNames);
         
-        System.out.println("\n=== Числа больше 5 ===");
-        numbers.stream()
-               .filter(n -> n > 5)
-               .forEach(n -> System.out.println("Число > 5: " + n));
+        // Дополнительные примеры с collect():
         
-        System.out.println("\n=== Нечетные числа ===");
-        numbers.stream()
-               .filter(n -> n % 2 != 0)
-               .forEach(System.out::println);
+        System.out.println("\n=== Имена, начинающиеся на 'А' ===");
+        List<String> namesStartingWithA = names.stream()
+            .filter(name -> name.startsWith("А"))
+            .collect(Collectors.toList());
+        System.out.println("Имена на 'А': " + namesStartingWithA);
         
-        System.out.println("\n=== Числа от 3 до 8 ===");
-        numbers.stream()
-               .filter(n -> n >= 3 && n <= 8)
-               .forEach(n -> System.out.println("Число в диапазоне: " + n));
+        System.out.println("\n=== Имена в верхнем регистре ===");
+        List<String> upperCaseNames = names.stream()
+            .map(String::toUpperCase)  // Преобразуем в верхний регистр
+            .collect(Collectors.toList());
+        System.out.println("Имена в верхнем регистре: " + upperCaseNames);
         
-        System.out.println("\n=== Комбинированные операции ===");
-        // Фильтрация + преобразование
-        numbers.stream()
-               .filter(n -> n % 2 == 0)          // только четные
-               .map(n -> n * n)                  // возведение в квадрат
-               .forEach(n -> System.out.println("Квадрат четного числа: " + n));
+        System.out.println("\n=== Длины имен ===");
+        List<Integer> nameLengths = names.stream()
+            .map(String::length)      // Преобразуем в длины строк
+            .collect(Collectors.toList());
+        System.out.println("Длины имен: " + nameLengths);
         
-        System.out.println("\n=== Подсчет отфильтрованных элементов ===");
-        long evenCount = numbers.stream()
-                               .filter(n -> n % 2 == 0)
-                               .count();
-        System.out.println("Количество четных чисел: " + evenCount);
+        System.out.println("\n=== Уникальные длины имен ===");
+        List<Integer> uniqueLengths = names.stream()
+            .map(String::length)
+            .distinct()               // Убираем дубликаты
+            .collect(Collectors.toList());
+        System.out.println("Уникальные длины: " + uniqueLengths);
+        
+        System.out.println("\n=== Сортировка имен ===");
+        List<String> sortedNames = names.stream()
+            .sorted()                 // Сортировка по умолчанию (алфавитная)
+            .collect(Collectors.toList());
+        System.out.println("Отсортированные имена: " + sortedNames);
     }
 }
