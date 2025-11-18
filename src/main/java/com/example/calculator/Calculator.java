@@ -1,17 +1,12 @@
 package com.example.calculator;
 
 /**
- * Класс Calculator предоставляет базовые арифметические операции.
- * Включает сложение, вычитание, умножение и деление целых чисел.
+ * Класс Calculator предоставляет базовые арифметические операции
+ * и дополнительные методы для тестирования различных assertions
  */
 public class Calculator {
     
-    /**
-     * Сложение двух целых чисел
-     * @param a первое слагаемое
-     * @param b второе слагаемое
-     * @return сумма a и b
-     */
+    // Существующие методы...
     public int add(int a, int b) {
         return a + b;
     }
@@ -61,7 +56,6 @@ public class Calculator {
         if (b < 0) {
             throw new IllegalArgumentException("Показатель степени не может быть отрицательным");
         }
-        
         int result = 1;
         for (int i = 0; i < b; i++) {
             result *= a;
@@ -79,11 +73,82 @@ public class Calculator {
         if (n < 0) {
             throw new IllegalArgumentException("Факториал определен только для неотрицательных чисел");
         }
-        
         int result = 1;
         for (int i = 2; i <= n; i++) {
             result *= i;
         }
         return result;
+    }
+
+    // НОВЫЕ МЕТОДЫ ДЛЯ ТЕСТИРОВАНИЯ ASSERTIONS
+    
+    /**
+     * Проверяет, является ли число положительным
+     */
+    public boolean isPositive(int number) {
+        return number > 0;
+    }
+    
+    /**
+     * Проверяет, является ли число четным
+     */
+    public boolean isEven(int number) {
+        return number % 2 == 0;
+    }
+    
+    /**
+     * Проверяет, является ли число нечетным
+     */
+    public boolean isOdd(int number) {
+        return number % 2 != 0;
+    }
+    
+    /**
+     * Проверяет, является ли число простым
+     */
+    public boolean isPrime(int number) {
+        if (number <= 1) return false;
+        if (number == 2) return true;
+        if (number % 2 == 0) return false;
+        
+        for (int i = 3; i * i <= number; i += 2) {
+            if (number % i == 0) return false;
+        }
+        return true;
+    }
+    
+    /**
+     * Проверяет, делится ли число на divisor
+     */
+    public boolean isDivisibleBy(int number, int divisor) {
+        return number % divisor == 0;
+    }
+    
+    /**
+     * Обрабатывает число и возвращает строку или null
+     */
+    public String processNumber(int number) {
+        if (number >= 0) {
+            return "Обработано: " + number;
+        }
+        return null;
+    }
+    
+    /**
+     * Генерирует последовательность чисел
+     */
+    public int[] generateSequence(int length) {
+        int[] sequence = new int[length];
+        for (int i = 0; i < length; i++) {
+            sequence[i] = i + 1;
+        }
+        return sequence;
+    }
+    
+    /**
+     * Возвращает число как double для тестирования delta
+     */
+    public double getDoubleValue(int number) {
+        return (double) number;
     }
 }
