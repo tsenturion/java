@@ -151,4 +151,39 @@ public class Calculator {
     public double getDoubleValue(int number) {
         return (double) number;
     }
+
+    // НОВЫЕ МЕТОДЫ ДЛЯ ТЕСТИРОВАНИЯ ИСКЛЮЧЕНИЙ
+    
+    /**
+     * Вычисляет квадратный корень (только для неотрицательных чисел)
+     */
+    public double sqrt(int number) {
+        if (number < 0) {
+            throw new IllegalArgumentException("Квадратный корень определен только для неотрицательных чисел");
+        }
+        return Math.sqrt(number);
+    }
+    
+    /**
+     * Делит числа с проверкой на переполнение
+     */
+    public int safeDivide(int a, int b) {
+        if (b == 0) {
+            throw new ArithmeticException("Деление на ноль");
+        }
+        if (a == Integer.MIN_VALUE && b == -1) {
+            throw new ArithmeticException("Переполнение при делении");
+        }
+        return a / b;
+    }
+    
+    /**
+     * Вычисляет логарифм (только для положительных чисел)
+     */
+    public double logarithm(int number) {
+        if (number <= 0) {
+            throw new IllegalArgumentException("Логарифм определен только для положительных чисел");
+        }
+        return Math.log(number);
+    }
 }
