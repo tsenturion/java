@@ -1,98 +1,67 @@
+//Используя Stream API, напишите цепочку операторов, чтобы получить список этих строк, преобразованных к верхнему регистру.
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-class Student {
-    private String name;
-    private int age;
-    private double averageGrade;
-    
-    // Конструктор
-    public Student(String name, int age, double averageGrade) {
-        this.name = name;
-        this.age = age;
-        this.averageGrade = averageGrade;
-    }
-    
-    // Геттеры
-    public String getName() {
-        return name;
-    }
-    
-    public int getAge() {
-        return age;
-    }
-    
-    public double getAverageGrade() {
-        return averageGrade;
-    }
-    
-    // Для красивого вывода
-    @Override
-    public String toString() {
-        return name + " (возраст: " + age + ", средний балл: " + averageGrade + ")";
+public class Main {
+    public static void main(String[] args) {
+        // Исходный список имен
+        List<String> names = Arrays.asList("анна", "иван", "мария", "пётр", "яна");
+        
+        System.out.println("Исходный список имен: " + names);
+        
+        // Преобразование имен в верхний регистр
+        List<String> upperCaseNames = names.stream()
+                                          .map(String::toUpperCase)
+                                          .collect(Collectors.toList());
+        
+        System.out.println("Имена в верхнем регистре: " + upperCaseNames);
+        
+        // Дополнительные примеры преобразований:
+        
+        System.out.println("\n=== Различные преобразования строк ===");
+        
+        // Добавление приставки к каждому имени
+        List<String> namesWithPrefix = names.stream()
+                                           .map(name -> "Студент: " + name)
+                                           .collect(Collectors.toList());
+        System.out.println("Имена с приставкой: " + namesWithPrefix);
+        
+        // Преобразование в длину строк
+        List<Integer> nameLengths = names.stream()
+                                        .map(String::length)
+                                        .collect(Collectors.toList());
+        System.out.println("Длины имен: " + nameLengths);
+        
+        // Комплексное преобразование - имя + длина
+        List<String> namesWithLength = names.stream()
+                                           .map(name -> name + " (" + name.length() + " букв)")
+                                           .collect(Collectors.toList());
+        System.out.println("Имена с указанием длины: " + namesWithLength);
+        
+        // Цепочка преобразований
+        System.out.println("\n=== Цепочка преобразований ===");
+        List<String> complexTransform = names.stream()
+                                            .map(String::toUpperCase)        // в верхний регистр
+                                            .map(name -> name + "!")         // добавляем восклицательный знак
+                                            .map(name -> ">> " + name)       // добавляем префикс
+                                            .collect(Collectors.toList());
+        System.out.println("Цепочка преобразований: " + complexTransform);
+        
+        // Сравнение исходного и преобразованного списков
+        System.out.println("\n=== Сравнение списков ===");
+        System.out.println("Исходный список: " + names);
+        System.out.println("Преобразованный список: " + upperCaseNames);
+        System.out.println("Исходный список не изменился: " + (names != upperCaseNames));
+        
+        // Работа с пустым списком
+        System.out.println("\n=== Работа с пустым списком ===");
+        List<String> emptyList = Arrays.asList();
+        List<String> emptyResult = emptyList.stream()
+                                           .map(String::toUpperCase)
+                                           .collect(Collectors.toList());
+        System.out.println("Пустой исходный список: " + emptyList);
+        System.out.println("Результат для пустого списка: " + emptyResult);
     }
 }
 
-public class Main {
-    public static void main(String[] args) {
-        // Создание списка студентов
-        List<Student> students = Arrays.asList(
-            new Student("Анна", 20, 4.8),
-            new Student("Иван", 22, 3.9),  // Не подходит по среднему баллу
-            new Student("Мария", 19, 4.5), // Не подходит по возрасту
-            new Student("Пётр", 21, 4.2),
-            new Student("Ольга", 20, 4.9)
-        );
-        
-        System.out.println("Все студенты:");
-        students.forEach(System.out::println);
-        
-        // Обработка потока студентов
-        List<String> resultNames = students.stream()
-            .filter(student -> student.getAge() >= 20)           // Шаг 1: Фильтрация по возрасту
-            .filter(student -> student.getAverageGrade() > 4.0)  // Шаг 2: Фильтрация по среднему баллу
-            .sorted((s1, s2) -> s1.getName().compareTo(s2.getName())) // Шаг 3: Сортировка по имени
-            .map(Student::getName)                               // Шаг 4: Преобразование в имена
-            .collect(Collectors.toList());                       // Шаг 5: Сбор результатов
-        
-        System.out.println("\n=== Результат обработки ===");
-        System.out.println("Имена студентов (возраст ≥ 20, средний балл > 4.0, отсортированы по алфавиту):");
-        System.out.println(resultNames);
-        
-        // Детальный разбор процесса
-        System.out.println("\n=== Детальный разбор процесса ===");
-        
-        System.out.println("1. Исходный список: 5 студентов");
-        
-        System.out.println("2. После filter(age >= 20):");
-        students.stream()
-            .filter(student -> student.getAge() >= 20)
-            .forEach(s -> System.out.println("   - " + s.getName() + " (возраст: " + s.getAge() + ")"));
-        
-        System.out.println("3. После filter(grade > 4.0):");
-        students.stream()
-            .filter(student -> student.getAge() >= 20)
-            .filter(student -> student.getAverageGrade() > 4.0)
-            .forEach(s -> System.out.println("   - " + s.getName() + " (балл: " + s.getAverageGrade() + ")"));
-        
-        System.out.println("4. После sorted(по имени) и map(в имена):");
-        System.out.println("   - Отсортированные имена: " + resultNames);
-        
-        // Альтернативный вариант с одним фильтром
-        System.out.println("\n=== Альтернативный вариант (один фильтр) ===");
-        List<String> alternativeResult = students.stream()
-            .filter(student -> student.getAge() >= 20 && student.getAverageGrade() > 4.0)
-            .sorted((s1, s2) -> s1.getName().compareTo(s2.getName()))
-            .map(Student::getName)
-            .collect(Collectors.toList());
-        
-        System.out.println("Результат (один фильтр): " + alternativeResult);
-        
-        // Сравнение двух подходов
-        System.out.println("\n=== Сравнение подходов ===");
-        System.out.println("Два фильтра: " + resultNames);
-        System.out.println("Один фильтр: " + alternativeResult);
-        System.out.println("Результаты идентичны: " + resultNames.equals(alternativeResult));
-    }
-}
