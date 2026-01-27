@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "LibraryApp",
+            "request": "launch",
+            "mainClass": "LibraryApp",
+            "projectName": "java_dbb8db15"
+        },
+        {
+            "type": "java",
             "name": "MinMaxAverage",
             "request": "launch",
             "mainClass": "MinMaxAverage",
