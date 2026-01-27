@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "MenuCalculator",
+            "request": "launch",
+            "mainClass": "MenuCalculator",
+            "projectName": "java_dbb8db15"
+        },
+        {
+            "type": "java",
             "name": "CurrencyConverter",
             "request": "launch",
             "mainClass": "CurrencyConverter",
