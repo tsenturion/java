@@ -5,84 +5,29 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 
 public class CalculatorEngine implements ActionListener {
+    private static final String ERROR_TEXT = "Ошибка";
 
-    // Урок 11. Задание 2. Создать в CalculatorEngine ссылку на класс Calculator. Внесенный код, часть 1, начало
-    Calculator parent; // ссылка на Calculator
+    Calculator parent;
+    char selectedAction = ' ';
+    double currentResult = 0;
+    double memory = 0;
 
-    // Конструктор сохраняет ссылку на окно калькулятора
-    // в переменной класса parent
     public CalculatorEngine(Calculator parent) {
         this.parent = parent;
     }
-    // Урок 11. Задание 2. Создать в CalculatorEngine ссылку на класс Calculator. Внесенный код, часть 1, конец
-
-    // Урок 11. Задание 3. Реализовать алгоритм работы калькулятора. Внесенный код, часть 1, начало
-    char selectedAction = ' '; // +, -, /, или *
-    double currentResult = 0;
-    // Урок 11. Задание 3. Реализовать алгоритм работы калькулятора. Внесенный код, часть 1, конец
-    // Урок 11. Задание 5. Добавить обработку кнопок памяти и точки. Внесенный код, часть 1
-    double memory = 0; // Для памяти
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // Получаем источник события
         JButton clickedButton = (JButton) e.getSource();
-        // Получаем надпись на кнопке
-        // String clickedButtonLabel = clickedButton.getText();
-
-        // Урок 11. Задание 2. Создать в CalculatorEngine ссылку на класс Calculator. Внесенный код, часть 2, начало
-        // Получить текущий текст из поля вывода («дисплея») калькулятора
         String dispFieldText = parent.displayField.getText();
-        // parent.displayField.setText(dispFieldText + clickedButtonLabel);
-        // Урок 11. Задание 2. Создать в CalculatorEngine ссылку на класс Calculator. Внесенный код, часть 2, конец
-
-        // Урок 11. Задание 3. Реализовать алгоритм работы калькулятора. Внесенный код, часть 2, начало
-        double displayValue = 0;
-
-        // Получить число из дисплея калькулятора,
-        // если он не пустой.
-        // Восклицательный знак – это оператор отрицания
-
-//        if (!"".equals(dispFieldText)) {
-//            displayValue = Double.parseDouble(dispFieldText);
-//        }
         Object src = e.getSource();
+        double displayValue = parseDisplayValue(dispFieldText);
 
-        // Урок 11. Задание 6. Расширить функциональность калькулятора. Внесенный код, часть 1, начало
-        // Блок безопасного парсинга числа
-        try {
-            if (!"".equals(dispFieldText)) {
-                displayValue = Double.parseDouble(dispFieldText);
-            }
-        } catch (NumberFormatException ex) {
-            // если дисплей содержит скобки или что-то нечисловое
-            // просто оставляем displayValue = 0, не падаем
-        }
-        // Кнопка C
         if (src == parent.buttonClear) {
-            parent.displayField.setText("");
-            currentResult = 0;
-            selectedAction = ' ';
-        }
-        // Кнопка ←
-        else if (src == parent.buttonBack) {
-
-            if (dispFieldText.length() > 0) {
-                parent.displayField.setText(
-                        dispFieldText.substring(0, dispFieldText.length() - 1)
-                );
-            }
-
-        }
-        // Урок 11. Задание 6. Расширить функциональность калькулятора. Внесенный код, часть 1, конец
-
-        // Для каждой кнопки арифметического действия
-        // запомнить его: +, -, /, или *, сохранить текущее число
-        // в переменной currentResult, и очистить дисплей
-        // для ввода нового числа
-
-        // Арифметика
-        else if (src == parent.buttonPlus) {
+            resetCalculator();
+        } else if (src == parent.buttonBack) {
+            handleBackspace(dispFieldText);
+        } else if (src == parent.buttonPlus) {
             selectedAction = '+';
             currentResult = displayValue;
             parent.displayField.setText("");
@@ -99,29 +44,8 @@ public class CalculatorEngine implements ActionListener {
             currentResult = displayValue;
             parent.displayField.setText("");
         } else if (src == parent.buttonEqual) {
-            // Совершить арифметическое действие, в зависимости
-            // от selectedAction, обновить переменную currentResult
-            // и показать результат на дисплее
-            if (selectedAction == '+') {
-                currentResult += displayValue;
-                // Сконвертировать результат в строку, добавляя его
-                // к пустой строке и показать его
-                parent.displayField.setText("" + currentResult);
-            } else if (selectedAction == '-') {
-                currentResult -= displayValue;
-                parent.displayField.setText("" + currentResult);
-            } else if (selectedAction == '/') {
-                currentResult /= displayValue;
-                parent.displayField.setText("" + currentResult);
-            } else if (selectedAction == '*') {
-                currentResult *= displayValue;
-                parent.displayField.setText("" + currentResult);
-            }
-
-        }
-        // Урок 11. Задание 5. Добавить обработку кнопок памяти и точки. Внесенный код, часть 2, начало
-        // Память
-        else if (src == parent.buttonMC) {
+            calculateResult(displayValue);
+        } else if (src == parent.buttonMC) {
             memory = 0;
         } else if (src == parent.buttonMR) {
             parent.displayField.setText("" + memory);
@@ -129,26 +53,113 @@ public class CalculatorEngine implements ActionListener {
             memory = displayValue;
         } else if (src == parent.buttonMPlus) {
             memory += displayValue;
-        }
-        // Урок 11. Задание 5. Добавить обработку кнопок памяти и точки. Внесенный код, часть 2, конец
-
-        // Урок 11. Задание 6. Расширить функциональность калькулятора. Внесенный код, часть 2, начало
-        // Скобки
-        else if (src == parent.buttonOpen || src == parent.buttonClose) {
-            String clickedButtonLabel = clickedButton.getText();
-            parent.displayField.setText(dispFieldText + clickedButtonLabel);
-        }
-        // Урок 11. Задание 6. Расширить функциональность калькулятора. Внесенный код, часть 2, конец
-
-        else {
-            // Для всех цифровых кнопок присоединить надпись на кнопке к надписи в дисплее
-            String clickedButtonLabel = clickedButton.getText();
-            // Урок 11. Задание 5. Добавить обработку кнопок памяти и точки. Внесенный код, часть 3
-            if (clickedButtonLabel.equals(".") && dispFieldText.contains(".")) {
+        } else if (src == parent.buttonSquare) {
+            if (isInvalidForUnaryOperation(dispFieldText)) {
                 return;
             }
+            double result = displayValue * displayValue;
+            currentResult = result;
+            parent.displayField.setText("" + result);
+        } else if (src == parent.buttonSqrt) {
+            if (isInvalidForUnaryOperation(dispFieldText)) {
+                return;
+            }
+            if (displayValue < 0) {
+                showError();
+                return;
+            }
+            double result = Math.sqrt(displayValue);
+            currentResult = result;
+            parent.displayField.setText("" + result);
+        } else {
+            appendToDisplay(clickedButton.getText(), dispFieldText);
+        }
+    }
+
+    private void calculateResult(double displayValue) {
+        if (selectedAction == '+') {
+            currentResult += displayValue;
+            parent.displayField.setText("" + currentResult);
+        } else if (selectedAction == '-') {
+            currentResult -= displayValue;
+            parent.displayField.setText("" + currentResult);
+        } else if (selectedAction == '/') {
+            if (displayValue == 0) {
+                showError();
+                return;
+            }
+            currentResult /= displayValue;
+            parent.displayField.setText("" + currentResult);
+        } else if (selectedAction == '*') {
+            currentResult *= displayValue;
+            parent.displayField.setText("" + currentResult);
+        }
+    }
+
+    private void appendToDisplay(String clickedButtonLabel, String dispFieldText) {
+        if (".".equals(clickedButtonLabel) && dispFieldText.contains(".")) {
+            return;
+        }
+
+        if (ERROR_TEXT.equals(dispFieldText)) {
+            if (".".equals(clickedButtonLabel)) {
+                parent.displayField.setText("0.");
+            } else {
+                parent.displayField.setText(clickedButtonLabel);
+            }
+            return;
+        }
+
+        if (dispFieldText.isEmpty()) {
+            if (".".equals(clickedButtonLabel)) {
+                parent.displayField.setText("0.");
+            } else {
+                parent.displayField.setText(clickedButtonLabel);
+            }
+            return;
+        }
+
+        if ("0".equals(dispFieldText) && !".".equals(clickedButtonLabel)) {
+            parent.displayField.setText(clickedButtonLabel);
+        } else {
             parent.displayField.setText(dispFieldText + clickedButtonLabel);
         }
-        // Урок 11. Задание 3. Реализовать алгоритм работы калькулятора. Внесенный код, часть 2, конец
+    }
+
+    private void handleBackspace(String dispFieldText) {
+        if (ERROR_TEXT.equals(dispFieldText) || dispFieldText.length() <= 1) {
+            parent.displayField.setText("0");
+            return;
+        }
+
+        parent.displayField.setText(dispFieldText.substring(0, dispFieldText.length() - 1));
+    }
+
+    private boolean isInvalidForUnaryOperation(String dispFieldText) {
+        return dispFieldText.isEmpty() || ERROR_TEXT.equals(dispFieldText);
+    }
+
+    private double parseDisplayValue(String dispFieldText) {
+        if (dispFieldText.isEmpty() || ERROR_TEXT.equals(dispFieldText)) {
+            return 0;
+        }
+
+        try {
+            return Double.parseDouble(dispFieldText);
+        } catch (NumberFormatException ex) {
+            return 0;
+        }
+    }
+
+    private void resetCalculator() {
+        parent.displayField.setText("0");
+        currentResult = 0;
+        selectedAction = ' ';
+    }
+
+    private void showError() {
+        parent.displayField.setText(ERROR_TEXT);
+        currentResult = 0;
+        selectedAction = ' ';
     }
 }

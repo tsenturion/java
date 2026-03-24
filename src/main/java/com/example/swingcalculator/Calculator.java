@@ -1,6 +1,8 @@
 package com.example.swingcalculator;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -32,8 +34,8 @@ public class Calculator {
     JButton buttonDivide;
     JButton buttonClear;
     JButton buttonBack;
-    JButton buttonOpen;
-    JButton buttonClose;
+    JButton buttonSqrt;
+    JButton buttonSquare;
 
     // Кнопки для памяти (p2)
     JButton buttonMC;
@@ -49,11 +51,15 @@ public class Calculator {
         windowContent = new JPanel();
 
         // Задаём схему для этой панели
-        BorderLayout bl = new BorderLayout();
-        windowContent.setLayout(bl);
+        windowContent.setLayout(new BorderLayout());
 
         // Создаём и добавляем его в северную область окна
         displayField = new JTextField(30);
+        displayField.setText("0");
+        displayField.setFont(new Font("Arial", Font.BOLD, 16));
+        displayField.setHorizontalAlignment(JTextField.RIGHT);
+        displayField.setBackground(new Color(220, 240, 255));
+        displayField.setOpaque(true);
         windowContent.add("North", displayField);
 
         // Создаём кнопки, используя конструктор класса JButton,
@@ -77,21 +83,54 @@ public class Calculator {
         buttonDivide = new JButton("/");
         buttonClear = new JButton("C");
         buttonBack = new JButton("←");
-        buttonOpen = new JButton("(");
-        buttonClose = new JButton(")");
+        buttonSqrt = new JButton("√");
+        buttonSquare = new JButton("x²");
+
+        Font buttonFont = new Font("Arial", Font.BOLD, 16);
+        styleButton(button0, buttonFont);
+        styleButton(button1, buttonFont);
+        styleButton(button2, buttonFont);
+        styleButton(button3, buttonFont);
+        styleButton(button4, buttonFont);
+        styleButton(button5, buttonFont);
+        styleButton(button6, buttonFont);
+        styleButton(button7, buttonFont);
+        styleButton(button8, buttonFont);
+        styleButton(button9, buttonFont);
+        styleButton(buttonPoint, buttonFont);
+        styleButton(buttonEqual, buttonFont);
+        styleButton(buttonPlus, buttonFont);
+        styleButton(buttonMinus, buttonFont);
+        styleButton(buttonMultiply, buttonFont);
+        styleButton(buttonDivide, buttonFont);
+        styleButton(buttonClear, buttonFont);
+        styleButton(buttonBack, buttonFont);
+        styleButton(buttonSqrt, buttonFont);
+        styleButton(buttonSquare, buttonFont);
+
+        buttonPlus.setBackground(Color.LIGHT_GRAY);
+        buttonMinus.setBackground(Color.LIGHT_GRAY);
+        buttonMultiply.setBackground(Color.LIGHT_GRAY);
+        buttonDivide.setBackground(Color.LIGHT_GRAY);
+        buttonEqual.setBackground(Color.ORANGE);
+        buttonPlus.setOpaque(true);
+        buttonMinus.setOpaque(true);
+        buttonMultiply.setOpaque(true);
+        buttonDivide.setOpaque(true);
+        buttonEqual.setOpaque(true);
 
         // Создаём кнопки для панели p2
         buttonMC = new JButton("MC");
         buttonMR = new JButton("MR");
         buttonMS = new JButton("MS");
         buttonMPlus = new JButton("M+");
+        styleButton(buttonMC, buttonFont);
+        styleButton(buttonMR, buttonFont);
+        styleButton(buttonMS, buttonFont);
+        styleButton(buttonMPlus, buttonFont);
 
-        // Создаём панель с GridLayout, которая содержит 12 кнопок:
-        // 10 кнопок с числами и кнопки с точкой и знаком равно
+        // Создаём панель с GridLayout, которая содержит кнопки калькулятора
         p1 = new JPanel();
-        GridLayout gl = new GridLayout(4, 3);
-        p1.setLayout(gl);
-
         p1.setLayout(new GridLayout(4, 5));
 
         // Добавляем кнопки на панель p1
@@ -109,30 +148,29 @@ public class Calculator {
         p1.add(button8);
         p1.add(button9);
         p1.add(buttonMinus);
-        p1.add(buttonOpen);
         p1.add(button0);
         p1.add(buttonPoint);
         p1.add(buttonEqual);
         p1.add(buttonPlus);
-        p1.add(buttonClose);
+        p1.add(buttonSqrt);
+        p1.add(buttonSquare);
 
         // Помещаем панель p1 в центральную область окна
         windowContent.add("Center", p1);
 
         p2 = new JPanel();
         p2.setLayout(new GridLayout(4, 1));
-
         p2.add(buttonMC);
         p2.add(buttonMR);
         p2.add(buttonMS);
         p2.add(buttonMPlus);
-
-        windowContent.add("West", p2); // добавление p2 в западную область основной панели
+        windowContent.add("West", p2);
 
         // Создаём фрейм и задаём его основную панель
         JFrame frame = new JFrame("Мой третий калькулятор");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setContentPane(windowContent);
+        frame.setLocationRelativeTo(null);
 
         // Делаем размер окна таким, чтобы вместить все компоненты
         frame.pack();
@@ -140,8 +178,6 @@ public class Calculator {
         // Отображаем окно
         frame.setVisible(true);
 
-        // CalculatorEngine calcEngine = new CalculatorEngine();
-        // Урок 11. Задание 2. Создать в CalculatorEngine ссылку на класс Calculator
         CalculatorEngine calcEngine = new CalculatorEngine(this);
 
         button0.addActionListener(calcEngine);
@@ -154,19 +190,16 @@ public class Calculator {
         button7.addActionListener(calcEngine);
         button8.addActionListener(calcEngine);
         button9.addActionListener(calcEngine);
-
         buttonPoint.addActionListener(calcEngine);
         buttonPlus.addActionListener(calcEngine);
         buttonMinus.addActionListener(calcEngine);
         buttonDivide.addActionListener(calcEngine);
         buttonMultiply.addActionListener(calcEngine);
         buttonEqual.addActionListener(calcEngine);
-
         buttonClear.addActionListener(calcEngine);
         buttonBack.addActionListener(calcEngine);
-        buttonOpen.addActionListener(calcEngine);
-        buttonClose.addActionListener(calcEngine);
-
+        buttonSqrt.addActionListener(calcEngine);
+        buttonSquare.addActionListener(calcEngine);
         buttonMC.addActionListener(calcEngine);
         buttonMR.addActionListener(calcEngine);
         buttonMS.addActionListener(calcEngine);
@@ -175,5 +208,9 @@ public class Calculator {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(Calculator::new);
+    }
+
+    private void styleButton(JButton button, Font font) {
+        button.setFont(font);
     }
 }
