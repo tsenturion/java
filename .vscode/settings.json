@@ -4,6 +4,13 @@
     "src/test/java",
     "src"
   ],
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-17",
+            "path": "D:\\jdk-17",
+            "default": true
+        }
+    ],
     "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [
         "lib/**/*.jar"
