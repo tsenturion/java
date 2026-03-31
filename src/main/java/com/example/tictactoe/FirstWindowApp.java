@@ -11,44 +11,79 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 public class FirstWindowApp extends Application {
+
     private static final int BOARD_SIZE = 3;
+    private static final String MAIN_LAYOUT_STYLE = "-fx-background-color: #f5f5f5;";
+    private static final String BOTTOM_PANEL_STYLE =
+            "-fx-background-color: white;" +
+            "-fx-background-radius: 10;" +
+            "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);";
+    private static final String STATUS_DEFAULT_STYLE = "-fx-text-fill: #333333;";
+    private static final String STATUS_HOVER_STYLE = "-fx-text-fill: #2196F3;";
+    private static final String STATUS_NEXT_TURN_STYLE = "-fx-text-fill: #F44336; -fx-font-weight: bold;";
+    private static final String BUTTON_DEFAULT_STYLE =
+            "-fx-font-size: 24px;" +
+            "-fx-font-weight: bold;" +
+            "-fx-background-color: white;" +
+            "-fx-background-radius: 8;" +
+            "-fx-border-color: #cccccc;" +
+            "-fx-border-radius: 8;" +
+            "-fx-border-width: 2;" +
+            "-fx-cursor: hand;";
+    private static final String BUTTON_HOVER_STYLE =
+            "-fx-font-size: 24px;" +
+            "-fx-font-weight: bold;" +
+            "-fx-background-color: #e3f2fd;" +
+            "-fx-background-radius: 8;" +
+            "-fx-border-color: #2196F3;" +
+            "-fx-border-radius: 8;" +
+            "-fx-border-width: 2;" +
+            "-fx-cursor: hand;" +
+            "-fx-effect: dropshadow(three-pass-box, rgba(33,150,243,0.3), 10, 0, 0, 0);";
+    private static final String BUTTON_X_STYLE =
+            "-fx-font-size: 32px;" +
+            "-fx-font-weight: bold;" +
+            "-fx-text-fill: #2196F3;" +
+            "-fx-background-color: #e3f2fd;" +
+            "-fx-background-radius: 8;" +
+            "-fx-border-color: #2196F3;" +
+            "-fx-border-radius: 8;" +
+            "-fx-border-width: 2;" +
+            "-fx-cursor: hand;";
+
     private Button[][] buttons = new Button[BOARD_SIZE][BOARD_SIZE];
-    // Добавляем поле для метки статуса, чтобы к ней можно было обращаться из разных методов
     private Label statusLabel;
 
     @Override
     public void start(Stage stage) {
-        // Используем BorderPane для более гибкого размещения элементов
         BorderPane mainLayout = new BorderPane();
         mainLayout.setPadding(new Insets(10));
+        mainLayout.setStyle(MAIN_LAYOUT_STYLE);
 
-        // Создаем игровое поле и помещаем его в центр
         GridPane grid = createButtonGrid();
         mainLayout.setCenter(grid);
 
-        // Создаем нижнюю панель для размещения статуса
         VBox bottomPanel = new VBox();
         bottomPanel.setPadding(new Insets(10));
         bottomPanel.setSpacing(10);
+        bottomPanel.setStyle(BOTTOM_PANEL_STYLE);
 
-        // Создаем Label для отображения статуса игры
-        // Пока что он просто показывает текст, но в будущем будет отображать:
-        // - чей сейчас ход (X или O)
-        // - кто победил
-        // - ничья
-        statusLabel = new Label("Статус игры");
-        statusLabel.setFont(new Font(16)); // Увеличиваем размер шрифта
+        statusLabel = new Label("Status: waiting for move");
+        statusLabel.setFont(Font.font("System", FontWeight.BOLD, 16));
+        statusLabel.setStyle(STATUS_DEFAULT_STYLE);
+        statusLabel.setOnMouseEntered(e -> statusLabel.setStyle(STATUS_HOVER_STYLE));
+        statusLabel.setOnMouseExited(e -> statusLabel.setStyle(STATUS_DEFAULT_STYLE));
         bottomPanel.getChildren().add(statusLabel);
 
-        // Размещаем панель со статусом в нижней части главного макета
         mainLayout.setBottom(bottomPanel);
 
-        // Создаем сцену с немного увеличенной высотой, чтобы вместить статус
         Scene scene = new Scene(mainLayout, 400, 450);
-        stage.setTitle("Игровое поле 3×3");
+        scene.setUserAgentStylesheet(null);
+        stage.setTitle("Game board 3x3");
         stage.setScene(scene);
         stage.show();
     }
@@ -56,24 +91,22 @@ public class FirstWindowApp extends Application {
     private GridPane createButtonGrid() {
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(10));
-        grid.setHgap(5); // Отступы между кнопками
+        grid.setHgap(5);
         grid.setVgap(5);
+        grid.setStyle("-fx-background-color: transparent;");
 
-        // Настройка равных столбцов
         for (int i = 0; i < BOARD_SIZE; i++) {
             ColumnConstraints col = new ColumnConstraints();
             col.setPercentWidth(100.0 / BOARD_SIZE);
             grid.getColumnConstraints().add(col);
         }
 
-        // Настройка равных строк
         for (int i = 0; i < BOARD_SIZE; i++) {
             RowConstraints row = new RowConstraints();
             row.setPercentHeight(100.0 / BOARD_SIZE);
             grid.getRowConstraints().add(row);
         }
 
-        // Создание и размещение кнопок
         for (int row = 0; row < BOARD_SIZE; row++) {
             for (int col = 0; col < BOARD_SIZE; col++) {
                 Button button = createGameButton(row, col);
@@ -87,34 +120,38 @@ public class FirstWindowApp extends Application {
 
     private Button createGameButton(int row, int col) {
         Button button = new Button();
-
-        // Настройка размеров - кнопка растягивается на всю ячейку
         button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-
-        // Установка начального текста (пусто)
         button.setText("");
+        button.setStyle(BUTTON_DEFAULT_STYLE);
 
-        // Сохраняем координаты для обработчика
         final int r = row;
         final int c = col;
 
-        // Обработчик нажатия
         button.setOnAction(event -> {
             handleButtonClick(r, c, button);
+        });
+        button.setOnMouseEntered(e -> {
+            if (button.getText().isEmpty()) {
+                button.setStyle(BUTTON_HOVER_STYLE);
+            }
+        });
+        button.setOnMouseExited(e -> {
+            if (button.getText().isEmpty()) {
+                button.setStyle(BUTTON_DEFAULT_STYLE);
+            }
         });
 
         return button;
     }
 
     private void handleButtonClick(int row, int col, Button button) {
-        // Временная логика: просто показываем координаты
-        System.out.println("Нажата кнопка в позиции: [" + row + ", " + col + "]");
+        System.out.println("Button clicked at: [" + row + ", " + col + "]");
 
-        // Если кнопка пустая, ставим X (для теста)
         if (button.getText().isEmpty()) {
             button.setText("X");
-            // Здесь позже будет логика обновления statusLabel
-            // Например: statusLabel.setText("Ход игрока O");
+            button.setStyle(BUTTON_X_STYLE);
+            statusLabel.setText("Status: O turn");
+            statusLabel.setStyle(STATUS_NEXT_TURN_STYLE);
         }
     }
 
