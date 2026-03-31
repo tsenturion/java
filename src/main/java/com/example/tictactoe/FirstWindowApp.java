@@ -4,19 +4,50 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class FirstWindowApp extends Application {
     private static final int BOARD_SIZE = 3;
     private Button[][] buttons = new Button[BOARD_SIZE][BOARD_SIZE];
+    // Добавляем поле для метки статуса, чтобы к ней можно было обращаться из разных методов
+    private Label statusLabel;
 
     @Override
     public void start(Stage stage) {
+        // Используем BorderPane для более гибкого размещения элементов
+        BorderPane mainLayout = new BorderPane();
+        mainLayout.setPadding(new Insets(10));
+
+        // Создаем игровое поле и помещаем его в центр
         GridPane grid = createButtonGrid();
-        Scene scene = new Scene(grid, 400, 400);
+        mainLayout.setCenter(grid);
+
+        // Создаем нижнюю панель для размещения статуса
+        VBox bottomPanel = new VBox();
+        bottomPanel.setPadding(new Insets(10));
+        bottomPanel.setSpacing(10);
+
+        // Создаем Label для отображения статуса игры
+        // Пока что он просто показывает текст, но в будущем будет отображать:
+        // - чей сейчас ход (X или O)
+        // - кто победил
+        // - ничья
+        statusLabel = new Label("Статус игры");
+        statusLabel.setFont(new Font(16)); // Увеличиваем размер шрифта
+        bottomPanel.getChildren().add(statusLabel);
+
+        // Размещаем панель со статусом в нижней части главного макета
+        mainLayout.setBottom(bottomPanel);
+
+        // Создаем сцену с немного увеличенной высотой, чтобы вместить статус
+        Scene scene = new Scene(mainLayout, 400, 450);
         stage.setTitle("Игровое поле 3×3");
         stage.setScene(scene);
         stage.show();
@@ -25,7 +56,7 @@ public class FirstWindowApp extends Application {
     private GridPane createButtonGrid() {
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(10));
-        grid.setHgap(5);
+        grid.setHgap(5); // Отступы между кнопками
         grid.setVgap(5);
 
         // Настройка равных столбцов
@@ -68,7 +99,9 @@ public class FirstWindowApp extends Application {
         final int c = col;
 
         // Обработчик нажатия
-        button.setOnAction(event -> handleButtonClick(r, c, button));
+        button.setOnAction(event -> {
+            handleButtonClick(r, c, button);
+        });
 
         return button;
     }
@@ -80,6 +113,8 @@ public class FirstWindowApp extends Application {
         // Если кнопка пустая, ставим X (для теста)
         if (button.getText().isEmpty()) {
             button.setText("X");
+            // Здесь позже будет логика обновления statusLabel
+            // Например: statusLabel.setText("Ход игрока O");
         }
     }
 
