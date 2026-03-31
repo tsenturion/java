@@ -13,6 +13,7 @@
     ],
     "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [
-        "lib/**/*.jar"
+        "lib/**/*.jar",
+        "C:/Users/user/Downloads/javafx-sdk-17.0.18/lib/**/*.jar"
     ]
 }

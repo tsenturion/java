@@ -13,6 +13,14 @@
         },
         {
             "type": "java",
+            "name": "FirstWindowApp",
+            "request": "launch",
+            "mainClass": "com.example.tictactoe.FirstWindowApp",
+            "projectName": "java_dbb8db15",
+            "vmArgs": "--module-path \"C:\\Users\\user\\Downloads\\javafx-sdk-17.0.18\\lib\" --add-modules javafx.controls"
+        },
+        {
+            "type": "java",
             "name": "LibraryApp",
             "request": "launch",
             "mainClass": "LibraryApp",
