@@ -1,34 +1,86 @@
 package com.example.tictactoe;
 
 import javafx.application.Application;
-import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
 
 public class FirstWindowApp extends Application {
+    private static final int BOARD_SIZE = 3;
+    private Button[][] buttons = new Button[BOARD_SIZE][BOARD_SIZE];
+
     @Override
-    public void start(Stage primaryStage) {
-        // 1. Установка заголовка окна
-        primaryStage.setTitle("Моё первое приложение JavaFX");
+    public void start(Stage stage) {
+        GridPane grid = createButtonGrid();
+        Scene scene = new Scene(grid, 400, 400);
+        stage.setTitle("Игровое поле 3×3");
+        stage.setScene(scene);
+        stage.show();
+    }
 
-        // 2. Установка размеров окна (ширина, высота)
-        primaryStage.setWidth(400);
-        primaryStage.setHeight(300);
+    private GridPane createButtonGrid() {
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(10));
+        grid.setHgap(5);
+        grid.setVgap(5);
 
-        // Альтернативный способ задания размера:
-        // primaryStage.setScene(new Scene(new Group(), 400, 300));
+        // Настройка равных столбцов
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            ColumnConstraints col = new ColumnConstraints();
+            col.setPercentWidth(100.0 / BOARD_SIZE);
+            grid.getColumnConstraints().add(col);
+        }
 
-        // 3. Запрет изменения размеров окна (опционально)
-        // primaryStage.setResizable(false);
+        // Настройка равных строк
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            RowConstraints row = new RowConstraints();
+            row.setPercentHeight(100.0 / BOARD_SIZE);
+            grid.getRowConstraints().add(row);
+        }
 
-        // 4. Установка действия при закрытии окна
-        primaryStage.setOnCloseRequest(event -> {
-            System.out.println("Окно закрывается...");
-            // Здесь можно выполнить сохранение данных, освобождение ресурсов
-            Platform.exit(); // Полное завершение приложения
-        });
+        // Создание и размещение кнопок
+        for (int row = 0; row < BOARD_SIZE; row++) {
+            for (int col = 0; col < BOARD_SIZE; col++) {
+                Button button = createGameButton(row, col);
+                buttons[row][col] = button;
+                grid.add(button, col, row);
+            }
+        }
 
-        // 5. Отображение окна (обязательно!)
-        primaryStage.show();
+        return grid;
+    }
+
+    private Button createGameButton(int row, int col) {
+        Button button = new Button();
+
+        // Настройка размеров - кнопка растягивается на всю ячейку
+        button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
+        // Установка начального текста (пусто)
+        button.setText("");
+
+        // Сохраняем координаты для обработчика
+        final int r = row;
+        final int c = col;
+
+        // Обработчик нажатия
+        button.setOnAction(event -> handleButtonClick(r, c, button));
+
+        return button;
+    }
+
+    private void handleButtonClick(int row, int col, Button button) {
+        // Временная логика: просто показываем координаты
+        System.out.println("Нажата кнопка в позиции: [" + row + ", " + col + "]");
+
+        // Если кнопка пустая, ставим X (для теста)
+        if (button.getText().isEmpty()) {
+            button.setText("X");
+        }
     }
 
     public static void main(String[] args) {
